@@ -3,7 +3,7 @@ class CreateTracks < ActiveRecord::Migration
     create_table :tracks do |t|
 
       t.string :name, null: false
-
+      t.json :roll, null: false 
 
       t.timestamps null: false
     end

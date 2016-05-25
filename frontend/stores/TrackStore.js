@@ -15,7 +15,11 @@ TrackStore.__onDispatch = function (payload) {
       _tracks.push(payload.track);
       TrackStore.__emitChange();
       break;
+    case "TRACKSIMPORT":
+      console.log("tracksimp");
+      break;
   }
 
 };
+
 module.exports = TrackStore;

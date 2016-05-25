@@ -51,6 +51,7 @@
 	    KeyListener = __webpack_require__(194),
 	    OrganKey = __webpack_require__(173),
 	    Organ = __webpack_require__(195);
+	ApiUtil = __webpack_require__(200);
 	
 	document.addEventListener("DOMContentLoaded", function () {
 	    var root = $('#content')[0];
@@ -27482,9 +27483,57 @@
 	      _tracks.push(payload.track);
 	      TrackStore.__emitChange();
 	      break;
+	    case "TRACKSIMPORT":
+	      console.log("tracksimp");
+	      break;
 	  }
 	};
+	
 	module.exports = TrackStore;
+
+/***/ },
+/* 200 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiActions = __webpack_require__(201);
+	
+	module.exports = {
+	  fetchTracks: function () {
+	    $.ajax({
+	      method: "GET",
+	      url: "/tracks",
+	      dataType: "json",
+	      success: function (response) {
+	        console.log(response);
+	        ApiActions.importTracks(response);
+	      }
+	    });
+	  }
+	
+	};
+
+/***/ },
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(202);
+	
+	module.exports = {
+	  importTracks: function (tracks) {
+	    console.log("track impo dispatch");
+	    Dispatcher.dispatch({
+	      actionType: "TRACKSIMPORT",
+	      tracks: tracks
+	    });
+	  }
+	};
+
+/***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(2).Dispatcher;
+	module.exports = new Dispatcher();
 
 /***/ }
 /******/ ]);

@@ -5,9 +5,9 @@ var Dispatcher = require('./dispatcher/Dispatcher'),
     KeyListener = require('./util/KeyListener'),
     OrganKey = require('./components/OrganKey'),
     Organ = require('./components/Organ');
+    ApiUtil = require('./util/ApiUtil');
 
 document.addEventListener("DOMContentLoaded", function () {
   var root = $('#content')[0];
   ReactDOM.render(<Organ/>, root);
 });
- 
