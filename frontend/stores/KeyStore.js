@@ -2,7 +2,7 @@ var Tones = require('../constants/Tones'),
     Store = require('flux/utils').Store,
     Dispatcher = require('../dispatcher/Dispatcher');
 
-_notes = [];
+var _notes = [];
 
 var KeyStore = new Store(Dispatcher);
 
@@ -25,6 +25,10 @@ KeyStore.__onDispatch = function(payload) {
       break;
     case "KEYRELEASED":
       _notes.splice(KeyStore.find(payload.noteName), 1);
+      KeyStore.__emitChange();
+      break;
+    case "UPDATEALLNOTES":
+      _notes = payload.allNotes;
       KeyStore.__emitChange();
       break;
   }

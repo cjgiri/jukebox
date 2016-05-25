@@ -20739,7 +20739,7 @@
 	    Store = __webpack_require__(176).Store,
 	    Dispatcher = __webpack_require__(1);
 	
-	_notes = [];
+	var _notes = [];
 	
 	var KeyStore = new Store(Dispatcher);
 	
@@ -20762,6 +20762,10 @@
 	      break;
 	    case "KEYRELEASED":
 	      _notes.splice(KeyStore.find(payload.noteName), 1);
+	      KeyStore.__emitChange();
+	      break;
+	    case "UPDATEALLNOTES":
+	      _notes = payload.allNotes;
 	      KeyStore.__emitChange();
 	      break;
 	  }
@@ -27252,7 +27256,16 @@
 	      actionType: "KEYRELEASED",
 	      noteName: note
 	    });
+	  },
+	
+	  updateAllNotes: function (keys) {
+	    Dispatcher.dispatch({
+	      actionType: "UPDATEALLNOTES",
+	      allNotes: keys
+	    });
 	  }
+	
+	  //pass all notes, reconcile with existing array of notes
 	
 	};
 
@@ -27317,9 +27330,11 @@
 /* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(7);
-	var Track = __webpack_require__(197);
-	var KeyStore = __webpack_require__(174);
+	var React = __webpack_require__(7),
+	    Track = __webpack_require__(197),
+	    KeyStore = __webpack_require__(174),
+	    TrackStore = __webpack_require__(199),
+	    TrackActions = __webpack_require__(198);
 	
 	Recorder = React.createClass({
 	  displayName: 'Recorder',
@@ -27345,6 +27360,15 @@
 	    console.log(this.state.track.roll);
 	  },
 	
+	  playRecording: function () {
+	    this.state.track.play();
+	  },
+	
+	  saveTrack: function () {
+	    TrackActions.addTrack(this.state.track);
+	    TrackStore.allTracks();
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -27358,6 +27382,16 @@
 	        'button',
 	        { onClick: this.stopRecording },
 	        'stop'
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.playRecording },
+	        'play back'
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.saveTrack },
+	        'save'
 	      )
 	    );
 	  }
@@ -27367,8 +27401,10 @@
 
 /***/ },
 /* 197 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var KeyActions = __webpack_require__(193);
+	
 	var Track = function (attrs) {
 	  this.name = attrs.name;
 	  this.roll = attrs.roll || [];
@@ -27389,7 +27425,66 @@
 	  this.addNotes([]);
 	};
 	
+	Track.prototype.play = function () {
+	  if (this.interval) return true;
+	  var playBackTime = 0;
+	  var currentNote = 0;
+	
+	  this.interval = setInterval(function () {
+	    playBackTime += 10;
+	    if (currentNote < this.roll.length) {
+	      if (this.roll[currentNote].timeSlice < playBackTime) {
+	        KeyActions.updateAllNotes(this.roll[currentNote].notes);
+	        currentNote++;
+	      }
+	    } else {
+	      clearInterval(this.interval);
+	      this.interval = null;
+	    }
+	  }.bind(this), 10);
+	};
+	
 	module.exports = Track;
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(1);
+	
+	module.exports = {
+	  addTrack: function (track) {
+	    Dispatcher.dispatch({
+	      actionType: "ADDTRACK",
+	      track: track
+	    });
+	  }
+	};
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(176).Store,
+	    Dispatcher = __webpack_require__(1);
+	
+	var _tracks = [];
+	
+	var TrackStore = new Store(Dispatcher);
+	
+	TrackStore.allTracks = function () {
+	  return _tracks.slice();
+	};
+	
+	TrackStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "ADDTRACK":
+	      _tracks.push(payload.track);
+	      TrackStore.__emitChange();
+	      break;
+	  }
+	};
+	module.exports = TrackStore;
 
 /***/ }
 /******/ ]);

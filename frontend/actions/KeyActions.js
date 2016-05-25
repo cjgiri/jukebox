@@ -16,4 +16,13 @@ module.exports = {
     });
   },
 
+  updateAllNotes:function(keys){
+    Dispatcher.dispatch({
+      actionType: "UPDATEALLNOTES",
+      allNotes: keys
+    });
+  }
+
+  //pass all notes, reconcile with existing array of notes
+
 };
