@@ -10,6 +10,10 @@ KeyStore.find = function (note){
   return _notes.indexOf(note);
 };
 
+KeyStore.all = function (){
+  return _notes.slice();
+};
+
 KeyStore.__onDispatch = function(payload) {
   switch (payload.actionType){
     case "KEYPRESSED":
