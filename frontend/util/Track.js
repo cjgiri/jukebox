@@ -41,9 +41,4 @@ Track.prototype.play = function () {
   }.bind(this), 10);
 };
 
-
-
-
-
-
 module.exports = Track;

@@ -23,6 +23,4 @@ module.exports = {
     });
   }
 
-  //pass all notes, reconcile with existing array of notes
-
 };

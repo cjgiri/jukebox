@@ -18,9 +18,7 @@ var OrganKey = React.createClass({
   handleChange: function(){
     if (KeyStore.find(this.props.noteName) === -1){
       this.note.stop();
-      // debugger
     } else {
-      // debugger
       this.note.start();
     }
   },
